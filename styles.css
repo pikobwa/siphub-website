@@ -320,6 +320,26 @@ p {
   border-radius: 18px;
   box-shadow: 0 22px 44px rgba(15, 23, 42, 0.12);
   backdrop-filter: blur(8px);
+  animation: floatCard 4s ease-in-out infinite;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.floating-card:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 28px 52px rgba(15, 23, 42, 0.14);
+}
+
+.badge-two {
+  animation-delay: 1.1s;
+}
+
+@keyframes floatCard {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
 }
 
 .floating-card i {
@@ -1227,6 +1247,18 @@ p {
   width: 100%;
 }
 
+.captcha-wrap {
+  display: flex;
+  justify-content: center;
+  padding: 0.25rem 0 0.5rem;
+}
+
+.h-captcha {
+  display: inline-flex;
+  justify-content: center;
+  min-height: 78px;
+}
+
 .form-status {
   min-height: 1.4rem;
   margin: 0;
@@ -1304,8 +1336,29 @@ p {
 }
 
 @media (max-width: 760px) {
+  .nav-wrap {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 72px;
+    padding: 0.65rem 0;
+  }
+
+  .brand {
+    justify-self: start;
+    min-width: 0;
+  }
+
+  .brand-logo {
+    height: 38px;
+  }
+
   .nav-toggle {
     display: block;
+    justify-self: end;
+    width: 42px;
+    height: 42px;
   }
 
   .main-nav {
@@ -1326,15 +1379,31 @@ p {
   }
 
   .nav-cta {
-    display: none;
+    display: inline-flex;
+    padding: 0.65rem 0.8rem;
+    font-size: 0.72rem;
+    white-space: nowrap;
+    justify-self: end;
   }
 
   .hero-metrics,
   .program-grid,
   .story-grid,
   .partner-grid,
-  .theory-flow {
+  .theory-flow,
+  .team-grid {
     grid-template-columns: 1fr;
+  }
+
+  .team-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .team-photo {
+    width: 100%;
+    max-width: 180px;
+    height: 180px;
   }
 
   .section {

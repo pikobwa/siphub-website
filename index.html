@@ -21,6 +21,7 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
+    <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
@@ -84,8 +85,8 @@
           <div class="hero-visual reveal">
             <div class="image-card main-card">
               <img
-                src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1200&q=80"
-                alt="Students collaborating in learning environment"
+                src="https://images.unsplash.com/photo-1543269865-cbf427effbad?auto=format&fit=crop&w=1200&q=80"
+                alt="African students collaborating in a learning environment"
               />
             </div>
             <div class="floating-card badge-one">
@@ -126,8 +127,8 @@
 
           <div class="mission-image reveal">
             <img
-              src="https://images.unsplash.com/photo-1513258496099-48168024aec0?auto=format&fit=crop&w=1200&q=80"
-              alt="Young student receiving coaching"
+              src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1200&q=80"
+              alt="African learner receiving coaching and support"
             />
           </div>
         </div>
@@ -454,7 +455,7 @@
               <li>Mentorship for college success</li>
             </ul>
             <div class="donation-actions">
-              <a class="btn btn-primary" href="mailto:hello@siphub.org">Sponsor a Student</a>
+              <button class="btn btn-primary" type="button" data-open-modal="sponsor-modal">Sponsor a Student</button>
               <a class="btn btn-secondary" href="tel:+254723504139">Call Us</a>
             </div>
           </div>
@@ -590,7 +591,7 @@
 
     <div class="modal-backdrop" id="story-modal" aria-hidden="true">
       <div class="modal-panel story-modal-panel" role="dialog" aria-modal="true" aria-labelledby="story-modal-title">
-        <button class="modal-close story-close" type="button" aria-label="Close story detail">×</button>
+        <button class="modal-close story-close" type="button" data-close-modal="story-modal" aria-label="Close story detail">×</button>
         <div class="modal-header">
           <span class="eyebrow">Stories of Hope</span>
           <h3 id="story-modal-title">Story</h3>
@@ -601,13 +602,19 @@
 
     <div class="modal-backdrop" id="sponsor-modal" aria-hidden="true">
       <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="sponsor-modal-title">
-        <button class="modal-close" type="button" aria-label="Close sponsor form">×</button>
+        <button class="modal-close" type="button" data-close-modal="sponsor-modal" aria-label="Close sponsor form">×</button>
         <div class="modal-header">
           <span class="eyebrow">Partner with SIP Hub</span>
           <h3 id="sponsor-modal-title">Become a sponsor</h3>
         </div>
 
-        <form class="sponsor-form" id="sponsor-form">
+        <form class="sponsor-form" id="sponsor-form" action="https://api.web3forms.com/submit" method="POST">
+          <input type="hidden" name="access_key" value="7bd791a5-5c44-40c1-a3ed-c34597dc706d" />
+          <input type="hidden" name="subject" value="Support a Future inquiry" />
+          <input type="hidden" name="from_name" value="SIP Hub Website" />
+          <input type="text" name="botcheck" style="display:none" tabindex="-1" autocomplete="off" />
+          <input type="text" name="website" style="display:none" tabindex="-1" autocomplete="off" />
+
           <div class="form-row">
             <label>
               Full name

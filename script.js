@@ -44,11 +44,34 @@ window.addEventListener('scroll', setActiveNavLink, { passive: true });
 setActiveNavLink();
 
 const modal = document.getElementById('sponsor-modal');
-const openButtons = document.querySelectorAll('[data-open-modal]');
-const closeButton = document.querySelector('.modal-close');
+const openButtons = document.querySelectorAll('[data-open-modal="sponsor-modal"]');
+const closeButtons = document.querySelectorAll('[data-close-modal]');
+const sponsorForm = document.getElementById('sponsor-form');
+const successState = document.querySelector('.success-state');
+const formStatus = document.querySelector('.form-status');
+const submitCooldownMs = 10000;
+const lastSubmitKey = 'siphub-last-submit';
+
+const resetSponsorModalState = () => {
+  if (sponsorForm) {
+    sponsorForm.hidden = false;
+    sponsorForm.style.display = 'grid';
+  }
+
+  if (successState) {
+    successState.hidden = true;
+    successState.style.display = 'none';
+  }
+
+  if (formStatus) {
+    formStatus.textContent = '';
+    formStatus.style.color = '#111827';
+  }
+};
 
 const openModal = () => {
   if (!modal) return;
+  resetSponsorModalState();
   modal.classList.add('open');
   modal.setAttribute('aria-hidden', 'false');
 };
@@ -57,6 +80,14 @@ const closeModal = () => {
   if (!modal) return;
   modal.classList.remove('open');
   modal.setAttribute('aria-hidden', 'true');
+  resetSponsorModalState();
+};
+
+const closeTargetModal = (modalId) => {
+  const targetModal = document.getElementById(modalId);
+  if (!targetModal) return;
+  targetModal.classList.remove('open');
+  targetModal.setAttribute('aria-hidden', 'true');
 };
 
 openButtons.forEach((button) => {
@@ -65,9 +96,11 @@ openButtons.forEach((button) => {
   });
 });
 
-if (closeButton) {
-  closeButton.addEventListener('click', closeModal);
-}
+closeButtons.forEach((button) => {
+  button.addEventListener('click', () => {
+    closeTargetModal(button.dataset.closeModal);
+  });
+});
 
 if (modal) {
   modal.addEventListener('click', (event) => {
@@ -151,9 +184,6 @@ document.querySelectorAll('.story-link').forEach((link) => {
   });
 });
 
-const sponsorForm = document.getElementById('sponsor-form');
-const formStatus = document.querySelector('.form-status');
-const successState = document.querySelector('.success-state');
 const copyEmailButton = document.querySelector('.copy-email-btn');
 const sponsorEmailAddress = 'info@siphub.co.ke';
 
@@ -170,7 +200,7 @@ if (copyEmailButton) {
 }
 
 if (sponsorForm) {
-  sponsorForm.addEventListener('submit', (event) => {
+  sponsorForm.addEventListener('submit', async (event) => {
     event.preventDefault();
 
     const name = sponsorForm.elements.name.value.trim();
@@ -178,6 +208,10 @@ if (sponsorForm) {
     const organization = sponsorForm.elements.organization.value.trim();
     const phone = sponsorForm.elements.phone.value.trim();
     const message = sponsorForm.elements.message.value.trim();
+    const botCheck = sponsorForm.elements.botcheck.value.trim();
+    const websiteField = sponsorForm.elements.website.value.trim();
+    const lastSubmitTime = Number(localStorage.getItem(lastSubmitKey) || 0);
+    const now = Date.now();
 
     if (!name || !email || !message) {
       if (formStatus) {
@@ -187,27 +221,72 @@ if (sponsorForm) {
       return;
     }
 
-    const subject = encodeURIComponent('SIP Hub sponsorship inquiry');
-    const body = encodeURIComponent(
-      `Name: ${name}\nEmail: ${email}\nOrganization: ${organization || 'Not provided'}\nPhone: ${phone || 'Not provided'}\n\nMessage:\n${message}`
-    );
-
-    const mailtoLink = `mailto:${sponsorEmailAddress}?subject=${subject}&body=${body}`;
-
-    sponsorForm.hidden = true;
-    if (successState) {
-      successState.hidden = false;
+    if (botCheck || websiteField) {
+      if (formStatus) {
+        formStatus.textContent = 'Submission blocked by security checks.';
+        formStatus.style.color = '#FA2B31';
+      }
+      return;
     }
+
+    if (lastSubmitTime && now - lastSubmitTime < submitCooldownMs) {
+      if (formStatus) {
+        formStatus.textContent = 'Please wait a moment before sending another message.';
+        formStatus.style.color = '#FA2B31';
+      }
+      return;
+    }
+
+    const formData = new FormData(sponsorForm);
+    formData.set('name', name);
+    formData.set('email', email);
+    formData.set('organization', organization);
+    formData.set('phone', phone);
+    formData.set('message', message);
 
     if (formStatus) {
-      formStatus.textContent = '';
+      formStatus.textContent = 'Sending...';
+      formStatus.style.color = '#111827';
     }
 
-    sponsorForm.reset();
+    try {
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'Accept': 'application/json'
+        }
+      });
 
-    setTimeout(() => {
-      window.open(mailtoLink, '_blank');
-    }, 100);
+      const result = await response.json();
+
+      if (!response.ok || !result.success) {
+        throw new Error(result.message || 'Submission failed');
+      }
+
+      localStorage.setItem(lastSubmitKey, String(Date.now()));
+
+      if (sponsorForm) {
+        sponsorForm.hidden = true;
+        sponsorForm.style.display = 'none';
+      }
+
+      if (successState) {
+        successState.hidden = false;
+        successState.style.display = 'grid';
+      }
+
+      if (formStatus) {
+        formStatus.textContent = '';
+      }
+
+      sponsorForm.reset();
+    } catch (error) {
+      if (formStatus) {
+        formStatus.textContent = 'Your message could not be sent right now. Please email hello@siphub.org.';
+        formStatus.style.color = '#FA2B31';
+      }
+    }
   });
 }
 
