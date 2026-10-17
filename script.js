@@ -121,7 +121,7 @@ const storyContent = {
     title: 'From the Shadows of Kibera to the Gates of Strathmore',
     content: `
       <div class="story-modal-visual">
-        <img src="https://images.unsplash.com/photo-1497486751825-1233686d5d80?auto=format&fit=crop&w=900&q=80" alt="Students learning together" />
+        <img src="assets/university college.jpg" alt="University college students and campus life" />
       </div>
       <div class="story-quote">“When opportunity meets support, potential can no longer be ignored.”</div>
       <p>Two neurodivergent students, once excluded by stigma and limited access, began a new chapter through inclusive digital education and mentorship.</p>
@@ -133,7 +133,7 @@ const storyContent = {
     title: 'More Than Tech: Coaching for Real Life',
     content: `
       <div class="story-modal-visual">
-        <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=900&q=80" alt="Young person building work confidence" />
+        <img src="assets/upgrading.jpg" alt="Young person building work confidence" />
       </div>
       <div class="story-quote">“Real growth happens when skills meet confidence.”</div>
       <p>At SIP Hub, students are not only learning technical tools; they are building confidence, independence, and practical life skills.</p>
